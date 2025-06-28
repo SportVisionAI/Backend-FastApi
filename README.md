@@ -1,5 +1,9 @@
 # Sports Vision AI API
 
+![클래스 다이어그램](class_diagram.png)
+
+> 위 이미지는 프로젝트의 주요 클래스(모델, 서비스, 라우터 등) 구조와 관계를 한눈에 보여줍니다.
+
 실시간 스포츠 경기 분석을 위한 AI 기반 백엔드 API 서버입니다.
 
 ## 주요 기능
@@ -92,6 +96,7 @@ sportsvisionAI/
 ├── main.py                 # 메인 애플리케이션 파일
 ├── requirements.txt        # Python 의존성
 ├── README.md              # 프로젝트 문서
+├── class_diagram.png      # 클래스 다이어그램 이미지
 ├── models/                # 데이터 모델
 │   └── video.py          # 영상 관련 모델
 ├── routers/               # API 라우터
