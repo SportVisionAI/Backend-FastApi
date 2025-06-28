@@ -31,7 +31,7 @@ def create_class_diagram():
     dot.node('VideoService', '''{VideoService (Service)|+ upload_dir: str\\n+ videos_db: dict\\n+ analyses_db: dict\\n\\n+ upload_video()\\n+ _process_video()\\n+ get_video_history()\\n+ get_video_by_id()\\n+ analyze_video()\\n+ get_video_analyses()\\n+ get_video_recommendations()\\n+ delete_video()}''')
     
     # Video Router
-    dot.node('VideoRouter', '''{VideoRouter (Router)|\\n+ upload_video()\\n+ get_video_history()\\n+ get_video()\\n+ analyze_video()\\n+ get_video_analyses()\\n+ get_video_recommendations()\\n+ delete_video()\\n+ list_videos()}''')
+    dot.node('VideoRouter', '''{VideoRouter (Router)|\\n+ upload_video()\\n+ list_videos()\\n+ get_video()\\n+ analyze_video()\\n+ get_video_analyses()\\n+ get_video_recommendations()\\n+ delete_video()}''')
     
     # Main App
     dot.node('FastAPIApp', '''{FastAPI App (main.py)|\\n+ read_root()\\n+ read_item()\\n+ update_item()\\n+ health_check()}''')

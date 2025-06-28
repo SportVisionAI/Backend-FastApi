@@ -106,6 +106,7 @@ sportsvisionAI/
 ├── requirements.txt        # Python 의존성
 ├── README.md              # 프로젝트 문서
 ├── class_diagram.png      # 클래스 다이어그램 이미지
+├── generate_class_diagram.py  # 클래스 다이어그램 생성 스크립트
 ├── models/                # 데이터 모델
 │   └── video.py          # 영상 관련 모델
 ├── routers/               # API 라우터
@@ -214,6 +215,41 @@ pip install -r requirements.txt
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+### 클래스 다이어그램 생성
+
+```bash
+python generate_class_diagram.py
+```
+
+## API 응답 예시
+
+### 영상 목록 조회 응답
+```json
+[
+  {
+    "id": "video-123",
+    "title": "축구 경기 하이라이트",
+    "description": "2024년 챔피언스리그 결승전",
+    "status": "completed",
+    "sport_type": "soccer",
+    "teams": ["Real Madrid", "Manchester City"],
+    "created_at": "2024-01-01T00:00:00Z",
+    "analyses": [
+      {
+        "id": "analysis-456",
+        "analysis_type": "goal_detection",
+        "confidence_score": 0.85,
+        "result_data": {
+          "goals_detected": 3,
+          "goal_timestamps": [45.2, 67.8, 89.1]
+        },
+        "created_at": "2024-01-01T01:00:00Z"
+      }
+    ]
+  }
+]
+```
+
 ## 향후 개선 사항
 
 - [ ] 실제 AI 모델 통합 (YOLO, MediaPipe 등)
@@ -223,6 +259,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - [ ] 모바일 앱 API 지원
 - [ ] 클라우드 스토리지 연동
 - [ ] 성능 최적화 및 캐싱
+- [ ] 고급 검색 기능 (키워드, 날짜 범위 등)
 
 ## 라이선스
 
