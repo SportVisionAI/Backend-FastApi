@@ -44,18 +44,40 @@ async def upload_video(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/history", response_model=List[Video], summary="영상 히스토리 조회")
-async def get_video_history(
+@router.get("/", response_model=List[Video], summary="영상 목록 조회")
+async def list_videos(
+    sport_type: Optional[str] = None,
+    status: Optional[str] = None,
     limit: int = 20,
     offset: int = 0
 ):
     """
-    업로드된 영상들의 히스토리를 조회합니다.
+    영상 목록을 조회합니다. 필터링 파라미터가 없으면 전체 영상 목록을, 
+    있으면 조건에 맞는 영상들만 반환합니다. 각 영상의 분석 결과도 함께 포함됩니다.
     
+    - **sport_type**: 스포츠 종목으로 필터링 (선택사항)
+    - **status**: 상태로 필터링 (선택사항) - uploading, processing, completed, failed
     - **limit**: 조회할 영상 개수 (기본값: 20)
     - **offset**: 건너뛸 영상 개수 (기본값: 0)
+    
+    예시:
+    - 전체 목록: GET /videos/
+    - 축구 영상만: GET /videos/?sport_type=soccer
+    - 완료된 영상만: GET /videos/?status=completed
+    - 축구 완료 영상: GET /videos/?sport_type=soccer&status=completed
     """
-    return await video_service.get_video_history(limit=limit, offset=offset)
+    videos = await video_service.get_video_history(limit=limit, offset=offset)
+    
+    # 필터링 적용
+    if sport_type:
+        videos = [v for v in videos if v.sport_type == sport_type]
+    
+    if status:
+        videos = [v for v in videos if v.status.value == status]
+    
+    # 각 영상의 분석 결과를 포함하여 반환
+    # Video 모델의 analyses 필드가 이미 포함되어 있으므로 그대로 반환
+    return videos
 
 @router.get("/{video_id}", response_model=Video, summary="영상 상세 정보 조회")
 async def get_video(video_id: str):
@@ -130,30 +152,4 @@ async def delete_video(video_id: str):
         else:
             raise HTTPException(status_code=500, detail="영상 삭제에 실패했습니다.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/", response_model=List[Video], summary="영상 목록 조회")
-async def list_videos(
-    sport_type: Optional[str] = None,
-    status: Optional[str] = None,
-    limit: int = 20,
-    offset: int = 0
-):
-    """
-    조건에 맞는 영상 목록을 조회합니다.
-    
-    - **sport_type**: 스포츠 종목으로 필터링 (선택사항)
-    - **status**: 상태로 필터링 (선택사항)
-    - **limit**: 조회할 영상 개수 (기본값: 20)
-    - **offset**: 건너뛸 영상 개수 (기본값: 0)
-    """
-    videos = await video_service.get_video_history(limit=limit, offset=offset)
-    
-    # 필터링 적용
-    if sport_type:
-        videos = [v for v in videos if v.sport_type == sport_type]
-    
-    if status:
-        videos = [v for v in videos if v.status.value == status]
-    
-    return videos 
+        raise HTTPException(status_code=500, detail=str(e)) 

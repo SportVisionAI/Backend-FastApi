@@ -9,7 +9,7 @@
 ## 주요 기능
 
 - 🎥 **영상 업로드 및 처리**: 웹에서 영상을 업로드하고 자동으로 처리
-- 📚 **영상 히스토리 관리**: 업로드된 영상들의 히스토리 조회 및 관리
+- 📚 **영상 목록 관리**: 업로드된 영상들의 목록 조회 및 필터링
 - 🤖 **AI 기반 영상 분석**: 골 감지, 선수 추적, 전술 분석 등
 - 🔍 **관련 영상 추천**: 유사한 영상들을 자동으로 추천
 
@@ -51,12 +51,21 @@ POST /videos/upload
 - 지원 형식: mp4, avi, mov, mkv, webm
 - 최대 파일 크기: 100MB
 
-#### 2. 영상 히스토리 조회
+#### 2. 영상 목록 조회
 ```
-GET /videos/history?limit=20&offset=0
+GET /videos/?sport_type=soccer&status=completed&limit=20&offset=0
 ```
 - 업로드된 영상들의 목록 조회
-- 페이지네이션 지원
+- 필터링 파라미터가 없으면 전체 영상 목록 반환
+- 지원 필터링: sport_type, status
+- 페이지네이션 지원 (limit, offset)
+- **각 영상의 분석 결과도 함께 포함** (분석이 완료된 경우)
+
+**사용 예시:**
+- 전체 목록: `GET /videos/`
+- 축구 영상만: `GET /videos/?sport_type=soccer`
+- 완료된 영상만: `GET /videos/?status=completed`
+- 축구 완료 영상: `GET /videos/?sport_type=soccer&status=completed`
 
 #### 3. 영상 상세 정보 조회
 ```
@@ -130,7 +139,35 @@ video = response.json()
 print(f"업로드된 영상 ID: {video['id']}")
 ```
 
-### 2. 영상 분석 실행
+### 2. 영상 목록 조회
+
+```python
+import requests
+
+# 전체 영상 목록 (분석 결과 포함)
+response = requests.get("http://localhost:8000/videos/")
+videos = response.json()
+
+# 각 영상의 분석 결과 확인
+for video in videos:
+    print(f"영상: {video['title']}")
+    if video['analyses']:
+        print(f"  분석 결과 수: {len(video['analyses'])}")
+        for analysis in video['analyses']:
+            print(f"    - {analysis['analysis_type']} (신뢰도: {analysis['confidence_score']})")
+    else:
+        print("  분석 결과 없음")
+
+# 축구 영상만 필터링
+response = requests.get("http://localhost:8000/videos/?sport_type=soccer")
+soccer_videos = response.json()
+
+# 완료된 영상만 필터링
+response = requests.get("http://localhost:8000/videos/?status=completed")
+completed_videos = response.json()
+```
+
+### 3. 영상 분석 실행
 
 ```python
 import requests
@@ -147,7 +184,7 @@ analysis = response.json()
 print(f"분석 결과: {analysis}")
 ```
 
-### 3. 관련 영상 추천
+### 4. 관련 영상 추천
 
 ```python
 import requests

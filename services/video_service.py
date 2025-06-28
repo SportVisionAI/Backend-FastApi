@@ -94,10 +94,21 @@ class VideoService:
             print(f"영상 처리 중 오류: {str(e)}")
     
     async def get_video_history(self, limit: int = 20, offset: int = 0) -> List[Video]:
-        """영상 히스토리 조회"""
+        """영상 히스토리 조회 (분석 결과 포함)"""
         videos = list(self.videos_db.values())
         videos.sort(key=lambda x: x.created_at, reverse=True)
-        return videos[offset:offset + limit]
+        videos = videos[offset:offset + limit]
+        
+        # 각 영상의 분석 결과를 로드
+        for video in videos:
+            if not video.analyses:
+                video.analyses = []
+            # analyses_db에서 해당 영상의 분석 결과들을 찾아서 추가
+            for analysis in self.analyses_db.values():
+                if analysis.video_id == video.id:
+                    video.analyses.append(analysis)
+        
+        return videos
     
     async def get_video_by_id(self, video_id: str) -> Optional[Video]:
         """ID로 영상 조회"""
