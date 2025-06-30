@@ -23,7 +23,6 @@ class Video(BaseModel):
     description: Optional[str] = None
     file_path: str
     file_size: int  # bytes
-    duration: Optional[float] = None  # seconds
     status: VideoStatus
     sport_type: Optional[str] = None  # "soccer", "basketball", "baseball", etc.
     match_date: Optional[datetime] = None
